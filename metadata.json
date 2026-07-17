@@ -1,0 +1,6 @@
+{
+  "name": "Velvet",
+  "description": "A premium glassmorphic music curation and discovery platform featuring cross-platform playlist imports and AI suggestions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

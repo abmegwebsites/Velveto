@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default-deny catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && (request.auth.token.email == userId || request.auth.uid == userId);
+    }
+
+    function isValidUserDoc(data) {
+      return data.keys().hasAll(['songsList', 'playlists', 'folders', 'favorites', 'history', 'unlockedAchievements'])
+        && data.songsList is list
+        && data.playlists is list
+        && data.folders is list
+        && data.favorites is list
+        && data.history is list
+        && data.unlockedAchievements is list
+        && (!data.keys().contains('userName') || data.userName is string)
+        && (!data.keys().contains('userDesc') || data.userDesc is string)
+        && (!data.keys().contains('userAvatar') || data.userAvatar is string)
+        && (!data.keys().contains('listeningHours') || data.listeningHours is number)
+        && (!data.keys().contains('playCounts') || data.playCounts is map)
+        && (!data.keys().contains('weeklyListening') || data.weeklyListening is map);
+    }
+
+    // Rules for users collection
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidUserDoc(request.resource.data);
+      allow delete: if false; // Users cannot delete their entire core profile doc
+    }
+  }
+}

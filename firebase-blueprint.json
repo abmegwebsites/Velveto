@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Song": {
+      "title": "Song",
+      "description": "A track in the application, either seed or imported from YouTube",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "artist": { "type": "string" },
+        "album": { "type": "string" },
+        "artwork": { "type": "string" },
+        "duration": { "type": "string" },
+        "audioUrl": { "type": "string" },
+        "source": { "type": "string", "enum": ["YouTube", "Spotify", "Apple Music", "SoundCloud", "Velvet"] },
+        "sourceUrl": { "type": "string" },
+        "videoId": { "type": "string" },
+        "importedAt": { "type": "integer" },
+        "customTitle": { "type": "string" }
+      },
+      "required": ["id", "title", "artist", "artwork", "duration", "source"]
+    },
+    "User": {
+      "title": "User Profile and Music Library",
+      "description": "User specific collections, playlists, and imported tracks",
+      "type": "object",
+      "properties": {
+        "songsList": { "type": "array" },
+        "playlists": { "type": "array" },
+        "folders": { "type": "array" },
+        "favorites": { "type": "array" },
+        "history": { "type": "array" },
+        "unlockedAchievements": { "type": "array" },
+        "userName": { "type": "string" },
+        "userDesc": { "type": "string" },
+        "userAvatar": { "type": "string" },
+        "listeningHours": { "type": "number" },
+        "playCounts": { "type": "object" },
+        "weeklyListening": { "type": "object" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Permanent store for user accounts, playlists, and imported YouTube tracks"
+    }
+  }
+}
